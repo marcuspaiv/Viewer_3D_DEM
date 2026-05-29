@@ -7,9 +7,11 @@ Pipeline em Python para gerar vídeos de rotação 360°, vistas cenitais ortogo
 ![FFmpeg](https://img.shields.io/badge/FFmpeg-007808?style=for-the-badge&logo=ffmpeg&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-<p align="center">
-  <img src="outputs/preview.png" alt="Frame de exemplo — rotação 3D gerada pelo pipeline a partir do DEM da Chapada do Araripe" width="85%">
-</p>
+<div align="center">
+
+<img src="assets/reprojetado_MDE_chapadadoararipe_raster_copernicus_global_DSM_30m_rotacao.gif" width="800"/>
+
+</div>
 
 ## 🎯 O que esse pipeline faz
 
