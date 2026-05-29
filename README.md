@@ -1,87 +1,89 @@
-# 🏔️ Visualização 3D de Modelos Digitais de Elevação
+# 🏔️ 3D Visualization of Digital Elevation Models
 
-Pipeline em Python para gerar vídeos de rotação 360°, vistas cenitais ortogonais e exploração interativa a partir de qualquer DEM em CRS projetado. Sem moldura cartográfica, sem GUI, sem caixa-preta.
+Python pipeline to generate 360° rotation videos, orthogonal nadir views, and interactive exploration from any DEM in a projected CRS. No map frame, no GUI, no black box.
 
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![SciPy](https://img.shields.io/badge/SciPy-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white)
 ![FFmpeg](https://img.shields.io/badge/FFmpeg-007808?style=for-the-badge&logo=ffmpeg&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-<p align="center">
-  <img src="outputs/preview.png" alt="Frame de exemplo — rotação 3D gerada pelo pipeline a partir do DEM da Chapada do Araripe" width="85%">
-</p>
+<div align="center">
 
-## 🎯 O que esse pipeline faz
+<img src="assets/reprojetado_MDE_chapadadoararipe_raster_copernicus_global_DSM_30m_rotacao.gif" width="800"/>
 
-Três formas complementares de visualizar um DEM, todas a partir do mesmo arquivo GeoTIFF:
+</div>
 
-- 🎬 **Vídeo de rotação 360°** (`dem_rotacao_video.py`) — câmera orbitando o terreno, exagero vertical configurável, codificação MP4 H.264
-- 🛰️ **Vista cenital ortogonal** (`render_cenital.py`) — plan view do relevo com hillshading, sem distorção em perspectiva
-- 🖱️ **Visualizador interativo** (`view_3d.py`) — janela navegável com mouse e teclado, para inspecionar o DEM antes de renderizar
+## 🎯 What this pipeline does
 
-Os três scripts seguem o mesmo padrão de configuração — caminho do arquivo, recorte opcional, exagero vertical — e funcionam para qualquer DEM em sistema de coordenadas projetado (UTM, Albers, etc.). Este repositório usa o DEM da Chapada do Araripe como caso de demonstração, com as saídas correspondentes em [`outputs/`](outputs/).
+Three complementary ways to visualize a DEM, all from the same GeoTIFF file:
 
-## 🛠️ Stack técnica
+- 🎬 **360° rotation video** (`dem_rotacao_video.py`) — camera orbiting the terrain, configurable vertical exaggeration, MP4 H.264 encoding
+- 🛰️ **Orthogonal nadir view** (`render_cenital.py`) — plan view of the relief with hillshading, no perspective distortion
+- 🖱️ **Interactive viewer** (`view_3d.py`) — navigable window with mouse and keyboard, to inspect the DEM before rendering
 
-- **`rasterio`** — leitura e recorte do raster GeoTIFF
-- **`scipy`** — suavização gaussiana do relevo
-- **`pyvista`** — construção da malha 3D e sombreamento por iluminação fixa a NW
-- **`imageio-ffmpeg`** — codificação do vídeo MP4 (H.264)
+All three scripts follow the same configuration pattern — file path, optional clipping, vertical exaggeration — and work for any DEM in a projected coordinate system (UTM, Albers, etc.). This repository uses the Chapada do Araripe DEM as a demonstration case, with the corresponding outputs in [`outputs/`](outputs/).
 
-## 🚀 Como executar
+## 🛠️ Tech stack
 
-Pré-requisitos: Python 3.10+ e `pip`.
+- **`rasterio`** — reading and clipping the GeoTIFF raster
+- **`scipy`** — Gaussian smoothing of the relief
+- **`pyvista`** — building the 3D mesh and shading with fixed NW illumination
+- **`imageio-ffmpeg`** — MP4 video encoding (H.264)
+
+## 🚀 How to run
+
+Prerequisites: Python 3.10+ and `pip`.
 
 ```bash
-# Clonar o repositório
-git clone https://github.com/marcuspaiv/<nome-do-repo>.git
-cd <nome-do-repo>
+# Clone the repository
+git clone https://github.com/marcuspaiv/<repo-name>.git
+cd <repo-name>
 
-# Criar e ativar o ambiente virtual
+# Create and activate the virtual environment
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1     # Windows PowerShell
 # source .venv/bin/activate      # Linux/macOS
 
-# Instalar dependências
+# Install dependencies
 pip install rasterio scipy pyvista imageio-ffmpeg
 ```
 
-Em cada script, atualize `DEM_PATH` para apontar para o seu arquivo `.tif` e ajuste `CLIP_BBOX` e `EXAGERO` conforme a área e o relevo. Depois:
+In each script, update `DEM_PATH` to point to your `.tif` file and adjust `CLIP_BBOX` and `EXAGERO` according to the area and the relief. Then:
 
 ```bash
-python dem_rotacao_video.py     # vídeo de rotação 360°
-python render_cenital.py        # vista cenital ortogonal
-python view_3d.py               # visualizador interativo
+python dem_rotacao_video.py     # 360° rotation video
+python render_cenital.py        # orthogonal nadir view
+python view_3d.py               # interactive viewer
 ```
 
-**Requisitos do DEM:** GeoTIFF em sistema de coordenadas projetado (metros). Para DEMs em coordenadas geográficas (graus), reprojete antes para UTM ou outro CRS em metros — os scripts emitem um aviso, mas se ignorado o resultado sai com escala vertical incorreta.
+**DEM requirements:** GeoTIFF in a projected coordinate system (meters). For DEMs in geographic coordinates (degrees), reproject to UTM or another CRS in meters first — the scripts emit a warning, but if ignored the output will have an incorrect vertical scale.
 
-**Guia rápido do exagero vertical:**
+**Quick guide to vertical exaggeration:**
 
-| Tipo de relevo | EXAGERO sugerido |
+| Relief type | Suggested EXAGERO |
 |---|---|
-| Forte em área pequena (cordilheiras, cânions) | 1,0 – 1,5 |
-| Moderado em área média (chapadas, planaltos) | 2,0 – 3,0 |
-| Discreto em área grande (planícies, bacias) | 3,5 – 6,0 |
+| Strong over a small area (mountain ranges, canyons) | 1.0 – 1.5 |
+| Moderate over a medium area (plateaus, tablelands) | 2.0 – 3.0 |
+| Subtle over a large area (plains, basins) | 3.5 – 6.0 |
 
-## 🗺️ Caso de demonstração: Chapada do Araripe
+## 🗺️ Demonstration case: Chapada do Araripe
 
-A Chapada do Araripe, na divisa entre Ceará, Pernambuco e Piauí, é um platô que resistiu enquanto o terreno ao redor foi rebaixado pela erosão ao longo de milhões de anos. Geologicamente, é um remanescente de uma bacia sedimentar do período Cretáceo, cujas formações Crato e Santana estão entre os depósitos fossilíferos mais importantes do planeta — a região abriga o primeiro geoparque das Américas reconhecido pela UNESCO.
+The Chapada do Araripe, on the border between the states of Ceará, Pernambuco, and Piauí, is a plateau that endured while the surrounding terrain was lowered by erosion over millions of years. Geologically, it is a remnant of a Cretaceous sedimentary basin, whose Crato and Santana formations are among the most important fossil deposits on the planet — the region is home to the first UNESCO-recognized geopark in the Americas.
 
-O pipeline foi aplicado ao DEM da Chapada gerando os artefatos abaixo:
+The pipeline was applied to the Chapada DEM, producing the artifacts below:
 
-| Arquivo | Descrição |
+| File | Description |
 |---|---|
-| `outputs/araripe_rotacao_3d.mp4` | Vídeo de rotação 360° — 24 s · 1920×1080 · H.264 |
-| `outputs/araripe_cenital.png` | Vista cenital ortogonal com hillshading |
+| `outputs/araripe_rotacao_3d.mp4` | 360° rotation video — 24 s · 1920×1080 · H.264 |
+| `outputs/araripe_cenital.png` | Orthogonal nadir view with hillshading |
 
-**Dados do DEM utilizado:**
-- Fonte: [Copernicus Global Digital Surface Model (GLO-30)](https://spacedata.copernicus.eu/collections/copernicus-digital-elevation-model)
-- Resolução: 30 × 30 m
-- Projeção: SIRGAS 2000 / UTM 24S (EPSG:31984)
-- Recorte: 200 × 80 km, faixa de elevação 286 – 1.004 m
+**DEM data used:**
+- Source: [Copernicus Global Digital Surface Model (GLO-30)](https://spacedata.copernicus.eu/collections/copernicus-digital-elevation-model)
+- Resolution: 30 × 30 m
+- Projection: SIRGAS 2000 / UTM 24S (EPSG:31984)
+- Clip: 200 × 80 km, elevation range 286 – 1,004 m
 
-## 📂 Estrutura do repositório
+## 📂 Repository structure
 
 ```
 .
@@ -97,15 +99,15 @@ O pipeline foi aplicado ao DEM da Chapada gerando os artefatos abaixo:
 └── README.md
 ```
 
-## 📝 Notas técnicas
+## 📝 Technical notes
 
-- **Iluminação fixa a NW** gera hillshading com sombras coerentes. No vídeo de rotação, a "luz solar" não acompanha a câmera — cada face do relevo é mostrada sob iluminação variável conforme o ângulo, como aconteceria no campo.
-- **Decimação por 2** na malha visualizada (metade da resolução do DEM original) mantém o desempenho de renderização sem perda visual perceptível.
-- **Clipe por percentil (0,5–99,5)** na elevação para robustez contra outliers e nodata, sem distorcer a faixa real do relevo.
+- **Fixed NW illumination** produces hillshading with consistent shadows. In the rotation video, the "sunlight" does not follow the camera — each face of the relief is shown under varying illumination depending on the angle, as it would happen in the field.
+- **Decimation by 2** on the visualized mesh (half the resolution of the original DEM) keeps rendering performance high with no perceptible visual loss.
+- **Percentile clipping (0.5–99.5)** on elevation for robustness against outliers and nodata, without distorting the actual relief range.
 
-## 👤 Autor
+## 👤 Author
 
-**Marcus Paiva** — Geólogo · M.Sc. em Geologia do Petróleo (UNICAMP)
+**Marcus Paiva** — Geologist · M.Sc. in Petroleum Geology (UNICAMP)
 
 <p>
   <a href="https://www.linkedin.com/in/marcus-paiva-b10339186/" target="_blank">
@@ -119,6 +121,6 @@ O pipeline foi aplicado ao DEM da Chapada gerando os artefatos abaixo:
   </a>
 </p>
 
-## 📄 Licença
+## 📄 License
 
-MIT — uso livre com atribuição.
+MIT — free to use with attribution.
